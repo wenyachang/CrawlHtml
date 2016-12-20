@@ -45,6 +45,7 @@ void CrawlSingleHtml::getReplyContent()
 		return;
 	}
 	QTextStream out(&file);
+
 	QString codeContent = QString::fromLocal8Bit(reply->readAll());
 	removeNotConcerned(codeContent);
 	out << codeContent << endl;

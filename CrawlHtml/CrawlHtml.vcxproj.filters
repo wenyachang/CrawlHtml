@@ -49,6 +49,9 @@
     <ClCompile Include="RegExpManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RequestHtml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\main.qml">
@@ -62,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RegExpManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestHtml.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -27,5 +27,5 @@ RequestHtml* RequestHtml::instance()
 
 QString RequestHtml::getHtmlContent(QString url)
 {
-
+	return QString();
 }

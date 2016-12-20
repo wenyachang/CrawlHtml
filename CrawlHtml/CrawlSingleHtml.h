@@ -20,6 +20,7 @@ private:
 
 	QByteArray m_ReplayData;
 
-	QVector<CrawlSingleHtml*>  m_pChildUrls;
+	QVector<CrawlSingleHtml*>  m_pChildUrls; // article
+
 };
 
