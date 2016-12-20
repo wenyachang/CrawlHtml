@@ -14,10 +14,10 @@
 #include <QQuickView>
 #include <QQuickItem>
 #include <QQmlContext>
-#include "CrawlSingleHtml.h"
+#include "include/CrawlSingleHtml.h"
 #include <QVariant>
 #include <QDeclarativeView>
-#include "RegExpManager.h"
+#include "include/RegExpManager.h"
 
 
 //Õ¯“≥µÿ÷∑      
