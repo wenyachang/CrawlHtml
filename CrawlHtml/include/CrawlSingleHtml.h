@@ -1,26 +1,22 @@
 #pragma once
 
 #include <QObject>
-#include <QVector>
 
 class CrawlSingleHtml : public QObject
 {
 	Q_OBJECT
 public:
 	CrawlSingleHtml();
-	CrawlSingleHtml(QString url, QObject* parent = 0);
+	CrawlSingleHtml(QString message, QObject* parent = 0);
 	~CrawlSingleHtml();
-
-	void getReplyContent();
-	void removeNotConcerned(QString &content);
+	void initParam(QString message);
+	void crawlContent();
+	QString getCrawlContent();
 
 private:
-	QString m_strUrl;
+	QString m_strArticleUrl;
+	QString m_strContentRule;
 	QString m_strContent;
-
-	QByteArray m_ReplayData;
-
-	QVector<CrawlSingleHtml*>  m_pChildUrls; // article
-
+	QString m_strCurrentHtmlContent;
 };
 

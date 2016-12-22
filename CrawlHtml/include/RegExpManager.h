@@ -8,13 +8,17 @@ public:
 	~RegExpManager();
 
 	static RegExpManager* getInstance();
-	QVector<QRegExp> getRegExps();
-
+	void removeNotPairedTags(QString &content);
+	void removeContentNotConcerd(QString &content);
 	void loadRegExp();
+
+	void loadRegExpsNotPairedTags();
+	void loadRegExpsNotConcerd();
 
 private:
 	static RegExpManager* _Instance;
-	QVector<QRegExp>  m_regExps;
+	QVector<QRegExp>  m_regExpsNotPairedTags;
+	QVector<QRegExp>  m_regExpsNotConcerd;
 
 };
 

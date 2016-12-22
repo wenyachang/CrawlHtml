@@ -1,21 +1,11 @@
 #include "include/CrawlSingleHtml.h"
-#include <QUrl>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
-#include <QFile>
-#include <QTextStream>
-#include <QString>       
-#include <QRegExp>
-#include <QEventLoop>
-#include <QTextCodec>
-
+#include "include/RequestHtml.h"
 #include "include/RegExpManager.h"
+#include <QStringList>
 
-CrawlSingleHtml::CrawlSingleHtml(QString url, QObject* parent) 
+CrawlSingleHtml::CrawlSingleHtml(QString message, QObject* parent) 
 {
-	m_strUrl = url;
-	getReplyContent();
+	initParam(message);
 }
 
 CrawlSingleHtml::CrawlSingleHtml()
@@ -27,38 +17,35 @@ CrawlSingleHtml::~CrawlSingleHtml()
 {
 }
 
-void CrawlSingleHtml::getReplyContent()
+void CrawlSingleHtml::initParam(QString message)
 {
-	QUrl url(m_strUrl);
-	QNetworkAccessManager manager;
-	QEventLoop loop;
-	QNetworkReply *reply;
-	
-	reply = manager.get(QNetworkRequest(url));     
-	QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));     
-	loop.exec();
-
-	//获取源码，打开文件  
-	QFile file("code1.txt");
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+	QStringList list = message.split("$");
+	if (2 == list.size())
 	{
-		return;
+		m_strArticleUrl = list.at(0);
+		m_strContentRule = list.at(1);
 	}
-	QTextStream out(&file);
-
-	QString codeContent = QString::fromLocal8Bit(reply->readAll());
-	removeNotConcerned(codeContent);
-	out << codeContent << endl;
-	m_strContent = codeContent;
-	file.close();
-	
+	m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strArticleUrl);
+	crawlContent();
 }
 
-void CrawlSingleHtml::removeNotConcerned(QString &content)
+void CrawlSingleHtml::crawlContent()
 {
-	QVector<QRegExp> regExps = RegExpManager::getInstance()->getRegExps();
-	for (int i = 0; i < regExps.size(); ++i)
+	QRegExp rx(m_strContentRule);
+	rx.setMinimal(true);
+	if (rx.isValid())
 	{
-		content.remove(regExps.at(i));
+		int pos = m_strCurrentHtmlContent.indexOf(rx);
+		if (pos >= 0)
+		{
+			m_strContent = rx.cap(0);
+		}
 	}
+	RegExpManager::getInstance()->removeContentNotConcerd(m_strContent);
 }
+
+QString CrawlSingleHtml::getCrawlContent()
+{
+	return m_strContent;
+}
+
