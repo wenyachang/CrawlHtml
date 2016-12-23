@@ -12,12 +12,11 @@ Rectangle{
     border.color: "gray"
 
     property int textInputWidth: 202
-	
-    CrawlSingleHtml{
-        id:crawl
+    property string  lineColor: "black"
+
+    HandleMessage{
+        id: messageManager
     }
-
-
 
     Column{
             id: rootColumn
@@ -43,6 +42,7 @@ Rectangle{
                         RadioButton {
                             id: rd1
                             text: qsTr("作品集导出")
+                            checked: true
                             exclusiveGroup: exclusive
 
                         }
@@ -64,7 +64,7 @@ Rectangle{
 
             Row{
                 Rectangle{
-                    color: "black"
+                    color: lineColor
                     width: rootColumn.width
                     height: 1
                 }
@@ -101,6 +101,7 @@ Rectangle{
                             height:30
                             border.color: "lightsteelblue"
                             border.width: 2
+                            color: "lightgray"
                             clip: true
                             TextInput{
                                 id: booksUrl
@@ -126,6 +127,7 @@ Rectangle{
                             height:30
                             border.color: "lightsteelblue"
                             border.width: 2
+                            color: "lightgray"
                             clip: true
                             TextInput{
                                 id: booksRule
@@ -142,7 +144,7 @@ Rectangle{
 
             Row{
                 Rectangle{
-                    color: "black"
+                    color: lineColor
                     width: rootColumn.width
                     height: 1
                 }
@@ -179,6 +181,7 @@ Rectangle{
                             height:30
                             border.color: "lightsteelblue"
                             border.width: 2
+                            color: "lightgray"
                             clip: true
                             TextInput{
                                 id: bookUrl
@@ -202,6 +205,7 @@ Rectangle{
                             height:30
                             border.color: "lightsteelblue"
                             border.width: 2
+                            color: "lightgray"
                             clip: true
                             TextInput{
                                 id: bookRule
@@ -216,7 +220,7 @@ Rectangle{
 
             Row{
                 Rectangle{
-                    color: "black"
+                    color: lineColor
                     width: rootColumn.width
                     height: 1
                 }
@@ -257,6 +261,7 @@ Rectangle{
                                     height:30
                                     border.color: "lightsteelblue"
                                     border.width: 2
+                                    color: "lightgray"
                                     clip: true
                                     TextInput{
                                         id: articleUrl
@@ -282,9 +287,10 @@ Rectangle{
                                     height:30
                                     border.color: "lightsteelblue"
                                     border.width: 2
+                                    color: "lightgray"
                                     clip: true
                                     TextInput{
-                                        id: bookName
+                                        id: bookNameRule
                                         anchors.fill:parent
                                         horizontalAlignment: TextInput.AlignHCenter
                                         verticalAlignment: TextInput.AlignVCenter
@@ -309,9 +315,10 @@ Rectangle{
                                     height:30
                                     border.color: "lightsteelblue"
                                     border.width: 2
+                                    color: "lightgray"
                                     clip: true
                                     TextInput{
-                                        id: author
+                                        id: authorRule
                                         anchors.fill:parent
                                         horizontalAlignment: TextInput.AlignHCenter
                                         verticalAlignment: TextInput.AlignVCenter
@@ -334,9 +341,10 @@ Rectangle{
                                     height:30
                                     border.color: "lightsteelblue"
                                     border.width: 2
+                                    color: "lightgray"
                                     clip: true
                                     TextInput{
-                                        id: content
+                                        id: contentRule
                                         anchors.fill:parent
                                         horizontalAlignment: TextInput.AlignHCenter
                                         verticalAlignment: TextInput.AlignVCenter
@@ -350,7 +358,7 @@ Rectangle{
 
             Row{
                 Rectangle{
-                    color: "black"
+                    color: lineColor
                     width: rootColumn.width
                     height: 1
                 }
@@ -403,15 +411,14 @@ Rectangle{
                                    implicitHeight: parent.height
                                    implicitWidth: parent.width
                                    border.width: 1
-                                   border.color: "lightsteelblue"
-
+                                   border.color: "darkGray"
+                                   color: "lightgray"
                                }
                                label: Rectangle{
+                                   color: "lightgray"
                                    Text{
-                                       width: parent.width
-                                       height: parent.height
+                                       anchors.fill: parent
                                        text: qsTr("确 定")
-                                       font.family: "黑体"
                                        font.pixelSize: 15
                                        horizontalAlignment: Text.AlignHCenter
                                        verticalAlignment: Text.AlignVCenter
@@ -420,7 +427,7 @@ Rectangle{
                             }
 
                             onClicked: {
-
+                                handleMessage()
                             }
                         }
 
@@ -432,15 +439,16 @@ Rectangle{
                                    implicitHeight: parent.height
                                    implicitWidth: parent.width
                                    border.width: 1
-                                   border.color: "lightsteelblue"
+                                   border.color: "darkGray"
+                                   color: "lightgray"
+
 
                                }
                                label: Rectangle{
+                                  color: "lightgray"
                                   Text{
-                                      width: parent.width
-                                      height: parent.height
+                                      anchors.fill: parent
                                       text: qsTr("取 消")
-                                      font.family: "黑体"
                                       font.pixelSize: 15
                                       horizontalAlignment: Text.AlignHCenter
                                       verticalAlignment: Text.AlignVCenter
@@ -458,6 +466,30 @@ Rectangle{
     }
 
 
+    function  handleMessage()
+    {
+        console.log("handleMessage");
+        if (rd1.checked)
+        {
+            console.log("handleMessage1");
+            messageManager.setMessage(0, booksUrl.text + "$" + booksRule.text + "$" +
+                                      bookRule.text + "$" + bookNameRule.text + "$" + authorRule.text + "$" + contentRule.text,
+                                      check1.checked, check2.checked, check3.checked);
+        }
+        else if(rd2.checked)
+        {
+            console.log("handleMessage2");
+            messageManager.setMessage(1, bookUrl.text + "$" + bookRule.text + "$" +
+                                      bookNameRule.text + "$" + authorRule.text + "$" + contentRule.tetx,
+                                      check1.checked, check2.checked, check3.checked);
+        }
+        else if(rd3.checked)
+        {
+            console.log("handleMessage3");
+            messageManager.setMessage(2, articleUrl.text + "$" + bookNameRule.text + "$" + authorRule.text + "$" + contentRule.tetx,
+                                      check1.checked, check2.checked, check3.checked);
+        }
+    }
 
     MouseArea {
         id: dragRegion

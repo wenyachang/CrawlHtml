@@ -14,7 +14,7 @@
 #include <QQuickView>
 #include <QQuickItem>
 #include <QQmlContext>
-#include "include/CrawlSingleHtml.h"
+#include "include/HandleMessage.h"
 #include <QVariant>
 #include <QDeclarativeView>
 #include "include/RegExpManager.h"
@@ -47,20 +47,19 @@ int main(int argc, char *argv[])
 	//}
 
 	QApplication app(argc, argv);
-	qmlRegisterType<CrawlSingleHtml>("com.crawl", 1, 0, "CrawlSingleHtml");
+	qmlRegisterType<HandleMessage>("com.crawl", 1, 0, "HandleMessage");
 
 	QQuickView viewer;
 	viewer.setSource(QUrl(QStringLiteral("qml/main.qml")));
 	
 	viewer.rootContext()->setContextProperty("mainwindow", &viewer);
 	viewer.resize(700, 600);
-	//viewer.setOpacity(0.8);
+	
 	viewer.show();
 	viewer.setFlags(Qt::FramelessWindowHint);
 	QObject::connect((QObject*)viewer.engine(), SIGNAL(quit()), &app, SLOT(quit()));
 
 	RegExpManager::getInstance()->loadRegExp();
-	CrawlSingleHtml* html = new CrawlSingleHtml(URLSTR);
 
 	return app.exec();
 }

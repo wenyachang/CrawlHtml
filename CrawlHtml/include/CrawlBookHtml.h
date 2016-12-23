@@ -12,10 +12,13 @@ public:
 	CrawlBookHtml(QString message, QObject* parent = 0);
 	~CrawlBookHtml();
 	void initParam(QString message);
-	void crawlBookCatalog();
+	
 	void splitBookCatalogHrefs(QString catalog);
 	QMap<QString, CrawlSingleHtml*> getBookMap();
-	
+
+public slots:
+    void crawlBookCatalog();
+
 
 private:
 	QString m_strBookUrl;
@@ -23,6 +26,8 @@ private:
 	QString m_strBookNameRule;
 	QString m_strAuthorRule;
 	QString m_strContentRule;
+	QString m_strBookPath;
+
 
 	QString m_strCurrentHtmlContent;
 	QMap<QString, CrawlSingleHtml*> m_mapBook;

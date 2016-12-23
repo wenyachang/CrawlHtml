@@ -13,12 +13,12 @@ public:
 	CrawlBooksHtml(QString message, QObject* parent = 0);
 	~CrawlBooksHtml();
 	void initParam(QString message);
-	void crawlBookHref();
 	void splitBooksHrefs(QString hrefs);
 	void exportOneBook(QString bookName);
 	void exportToTxt();
 	
-
+public slots:
+    void crawlBookHref();
 
 private:
 	QString m_strBooksUrl;
@@ -27,6 +27,8 @@ private:
 	QString m_strBookNameRule;
 	QString m_strAuthorRule;
 	QString m_strContentRule;
+
+	QString m_strBookPath;
 
 	QString m_strCurrentHtmlContent;
 	

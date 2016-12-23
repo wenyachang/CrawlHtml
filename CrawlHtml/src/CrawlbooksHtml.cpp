@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QDir>
 #include <QCoreApplication>
+#include <QTimer>
 
 CrawlBooksHtml::CrawlBooksHtml(QString message, QObject* parent)
 {
@@ -34,8 +35,15 @@ void CrawlBooksHtml::initParam(QString message)
 		m_strAuthorRule = list.at(4);
 		m_strContentRule = list.at(5);
 	}
-	m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBooksUrl);
-	crawlBookHref();
+	m_strBookPath = QCoreApplication::applicationDirPath();
+
+	int count = 0;
+	while (m_strCurrentHtmlContent.isEmpty() && count < 3)
+	{
+		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBooksUrl);
+		count++;
+	}
+	QTimer::singleShot(5000, this, SLOT(crawlBookHref()));
 }
 
 void CrawlBooksHtml::crawlBookHref()
@@ -83,14 +91,14 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 	{
 		return;
 	}
-	QString message = "$" + m_strBookRule  + "$" + m_strBookNameRule + "$" + m_strAuthorRule +"$" +m_strContentRule;
+	QString message = "$" + m_strBookRule + "$" + m_strBookNameRule + "$" + m_strAuthorRule + "$" + m_strContentRule + "$";
 	for (int i = 0; i < nodeList.size(); ++i)
 	{
 		QString href = nodeList.at(i).toElement().attribute("href");
 		QString text = nodeList.at(i).toElement().text();
+		RegExpManager::getInstance()->removeFolderNameNotIncluded(text);
 		qDebug() << href << endl << text << endl;
-		m_mapBooks[text] = new CrawlBookHtml(href + message, false);
-		exportOneBook(text);
+		m_mapBooks[text] = new CrawlBookHtml(href + message + m_strBookPath + "/" + text, false);
 	}
 
 }
