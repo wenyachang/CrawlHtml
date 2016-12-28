@@ -119,20 +119,18 @@ void RegExpManager::loadRegExpsNotPairedTags()
 
 void RegExpManager::loadRegExpsNotConcerd()
 {
-	QRegExp rx("<(.*)>");
-	QRegExp rx1("\\{(.*)\\}");
-	QRegExp rx2("&nbsp;");
-	QRegExp rx3("body");
+	
+	QRegExp rx("<style>(.*)</style>");
+	QRegExp rx1("<div(.*)>");
+	QRegExp rx2("</div>");
 
 	rx.setMinimal(true);
 	rx1.setMinimal(true);
 	rx2.setMinimal(true);
-	rx3.setMinimal(true);
 
 	m_regExpsNotConcerd.append(rx);
 	m_regExpsNotConcerd.append(rx1);
-	/*m_regExpsNotConcerd.append(rx2);
-	m_regExpsNotConcerd.append(rx3);*/
+	m_regExpsNotConcerd.append(rx2);
 }
 
 void RegExpManager::loadFormats()
@@ -156,7 +154,6 @@ void RegExpManager::loadFormats()
 	m_mapAdjustFormat["&nbsp;"] = " ";
 	m_mapAdjustFormat["&nbsp;"] = " ";
 	m_mapAdjustFormat["&nbsp;"] = " ";
-
 	m_mapAdjustFormat["&nbsp;"] = " ";
 }
 

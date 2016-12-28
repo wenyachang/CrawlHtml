@@ -18,34 +18,10 @@
 #include <QVariant>
 #include <QDeclarativeView>
 #include "include/RegExpManager.h"
+#include <include/DataBaseManager.h>
 
-
-//ÍøÒ³µØÖ·      
-const QString URLSTR = "http://t.icesmall.cn/bookDir/53/819/0.html";
-//´¢´æÍøÒ³´úÂëµÄÎÄ¼þ      
-const QString FILE_NAME = "code.txt";
-
-class CrawlSingleHtml;
 int main(int argc, char *argv[])
 {
-	
-	//QRegExp rx0(QString("charset=\"(.*)\""));
-	//rx0.setMinimal(true);
-	//int pos = content.indexOf(rx0);
-	//QTextCodec * code;
-	//QString codeContent;
-
-	//if (pos >= 0)
-	//{
-	//	code = QTextCodec::codecForName(rx0.cap(1).toStdString().c_str());				
-	//	codeContent = code->toUnicode(reply->readAll());
-	//	
-	//}
-	//else
-	//{
-	//	codeContent = QString::fromLocal8Bit(reply->readAll());
-	//}
-
 	QApplication app(argc, argv);
 	qmlRegisterType<HandleMessage>("com.crawl", 1, 0, "HandleMessage");
 
@@ -60,6 +36,7 @@ int main(int argc, char *argv[])
 	QObject::connect((QObject*)viewer.engine(), SIGNAL(quit()), &app, SLOT(quit()));
 
 	RegExpManager::getInstance()->loadRegExp();
+	DataBaseManager::getInstance()->connectDataBase();
 
 	return app.exec();
 }

@@ -2,7 +2,8 @@
 #include "include/RequestHtml.h"
 #include "include/RegExpManager.h"
 #include <QDomDocument>
-#include <QTimer>
+#include <QTimer>	  、
+#include <QDebug>
 
 CrawlBookHtml::CrawlBookHtml(QString message, QObject* parent)
 {
@@ -32,7 +33,7 @@ void CrawlBookHtml::initParam(QString message)
 	}
 
 	int count = 0;
-	while (m_strCurrentHtmlContent.isEmpty() && count < 3)
+	while (m_strCurrentHtmlContent.isEmpty() && count < 10)
 	{
 		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBookUrl);
 		count++;
@@ -50,13 +51,24 @@ void CrawlBookHtml::crawlBookCatalog()
 		int pos = m_strCurrentHtmlContent.indexOf(rx);
 		if (pos >= 0)
 		{
+			if (rx.cap(0).isEmpty())
+			{
+				qDebug() << QString::fromLocal8Bit("CrawlBookHtml: 链接内容为空！");
+				return;
+			}
 			splitBookCatalogHrefs(rx.cap(0));
+		}
+		else
+		{
+			qDebug() << QString::fromLocal8Bit("CrawlBookHtml: book匹配错误。") << endl;
 		}
 	}
 }
 
 void CrawlBookHtml::splitBookCatalogHrefs(QString catalog)
 {
+	
+	//qDebug() << "CrawlBookHtml::catalog frefs :" << catalog << endl;
 	catalog = "<p>" + catalog + "</p>";
 	RegExpManager::getInstance()->removeNotPairedTags(catalog);
 
@@ -64,22 +76,24 @@ void CrawlBookHtml::splitBookCatalogHrefs(QString catalog)
 	QString error;
 	if (!doc.setContent(catalog, false, &error))
 	{
-		qDebug() << error << endl;
+		qDebug() << QString::fromLocal8Bit("CrawlBookHtml: html转xml错误。") << endl;
 		return;
 	}
 	QDomElement root = doc.documentElement();
 	QDomNodeList nodeList = root.elementsByTagName("a");
 	if (nodeList.isEmpty())
 	{
+		qDebug() << QString::fromLocal8Bit("CrawlBookHtml: 无book链接。") << endl;
 		return;
 	}
 
 	QString message = "$" + m_strContentRule + "$" + m_strBookPath + "$";
+	qDebug() << QString::fromLocal8Bit("CrawlBookHtml: book目录链接数目：") << nodeList.size() << endl;
 	for (int i = 0; i < nodeList.size(); ++i)
 	{
 		QString href = nodeList.at(i).toElement().attribute("href");
 		QString text = nodeList.at(i).toElement().text();
-		qDebug() << href << endl << text << endl;
+		//qDebug() << href << endl << text << endl;
 		QString num = QString("%1").arg(i+1);
 		m_mapBook[text] = new CrawlSingleHtml(href + message + num + ". " + text + ".txt", false);
 	}

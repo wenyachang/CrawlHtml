@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QTimer>
+#include <QDebug>
 
 CrawlBooksHtml::CrawlBooksHtml(QString message, QObject* parent)
 {
@@ -38,7 +39,7 @@ void CrawlBooksHtml::initParam(QString message)
 	m_strBookPath = QCoreApplication::applicationDirPath();
 
 	int count = 0;
-	while (m_strCurrentHtmlContent.isEmpty() && count < 3)
+	while (m_strCurrentHtmlContent.isEmpty() && count < 10)
 	{
 		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBooksUrl);
 		count++;
@@ -55,40 +56,36 @@ void CrawlBooksHtml::crawlBookHref()
 		int pos = m_strCurrentHtmlContent.indexOf(rx);
 		if (pos >= 0)
 		{
+			if (rx.cap(0).isEmpty())
+			{
+				qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: ÎÞÆ¥ÅäÄÚÈÝ¡£") << endl;
+				return;
+			}
 			splitBooksHrefs(rx.cap(0));
+		}
+		else
+		{
+			qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: booksÆ¥Åä´íÎó¡£") << endl;
 		}
 	} 
 }
 
 void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 {
-	/*int pos = 0;
-	QRegExp rx("<a href=\"(.*)\">");
-	while ((pos = rx.indexIn(hrefs, pos)) != -1)
-	{
-		pos += rx.matchedLength();
-		QString a = rx.cap(1);
-		m_vecBooks.append(new CrawlBookHtml(rx.cap(1)));
-	}*/
-
-	/*QFile file("D:/1.xml");
-	if (!file.open(QFile::ReadOnly))
-	{
-	return;
-	}*/
-
 	RegExpManager::getInstance()->removeNotPairedTags(hrefs);
-
+	//qDebug() << "CrawlBooksHtml::book frefs :" << hrefs << endl;
 	QDomDocument doc;
 	QString error;
 	if (!doc.setContent(hrefs, false, &error))
 	{
+		qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: html×ªxml´íÎó¡£") << endl;
 		return;
 	}
 	QDomElement root = doc.documentElement();
 	QDomNodeList nodeList = root.elementsByTagName("a");
 	if (nodeList.isEmpty())
 	{
+		qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: ÎÞbooksÁ´½Ó¡£") << endl;
 		return;
 	}
 	QString message = "$" + m_strBookRule + "$" + m_strBookNameRule + "$" + m_strAuthorRule + "$" + m_strContentRule + "$";
@@ -97,7 +94,7 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 		QString href = nodeList.at(i).toElement().attribute("href");
 		QString text = nodeList.at(i).toElement().text();
 		RegExpManager::getInstance()->removeFolderNameNotIncluded(text);
-		qDebug() << href << endl << text << endl;
+		//qDebug() << href << endl << text << endl;
 		m_mapBooks[text] = new CrawlBookHtml(href + message + m_strBookPath + "/" + text, false);
 	}
 

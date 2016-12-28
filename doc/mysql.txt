@@ -1,0 +1,12 @@
+1.MySQL在Windows下数据库名、表名、列名、别名都不区分大小写。
+
+如果想大小写区分则在my.ini 里面的mysqld部分
+
+加入 lower_case_table_names=0
+
+
+2.启动服务的命令为"net start stop mysql57"
+
+3.C:\Program Files\MySQL\MySQL Server 5.7\lib\libmysql.dll  复制到exe文件目录下
+
+4.sleep http://jingyan.baidu.com/article/5d368d1ec8cdc93f60c057e6.html

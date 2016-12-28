@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <QDir>
+#include<QSqlQuery>
 
 CrawlSingleHtml::CrawlSingleHtml(QString message, QObject* parent) 
 {
@@ -31,7 +32,7 @@ void CrawlSingleHtml::initParam(QString message)
 	}
 
 	int count = 0;
-	while (m_strCurrentHtmlContent.isEmpty() && count < 3)
+	while (m_strCurrentHtmlContent.isEmpty() && count < 10)
 	{
 		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strArticleUrl);
 		count++;
@@ -51,9 +52,14 @@ void CrawlSingleHtml::crawlContent()
 		{
 			m_strContent = rx.cap(0);
 		}
+		else
+		{
+			qDebug() << QString::fromLocal8Bit("CrawlSingleHtml: articleÆ¥Åä´íÎó¡£") << endl;
+		}
 	}
 	RegExpManager::getInstance()->removeContentNotConcerd(m_strContent);
 	exportArticle();
+	exportToMysql();
 }
 
 QString CrawlSingleHtml::getCrawlContent()
@@ -91,5 +97,20 @@ void CrawlSingleHtml::writeArticleToTxt()
 	}
 	QTextStream out(&file);
 	out << m_strContent;
+}
+
+void CrawlSingleHtml::exportToMysql()
+{
+	QStringList list = m_strBookPath.split("/");
+
+	qDebug() << list.at(list.size() - 1) << endl;
+	qDebug() << m_strArticleName << endl;
+
+	QSqlQuery query;
+	query.prepare("insert into novel (topic, name, content) values (:topic, :name, :content)");
+	query.bindValue(":topic", list.at(list.size() - 1));
+	query.bindValue(":name", m_strArticleName);
+	query.bindValue(":content", m_strContent);
+	query.exec();
 }
 

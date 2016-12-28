@@ -13,6 +13,7 @@ public:
 	QString getCrawlContent();
 	void exportArticle();
 	void writeArticleToTxt();
+	void exportToMysql();
 	
 public slots:
     void crawlContent();
