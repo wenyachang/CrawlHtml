@@ -1,6 +1,6 @@
 #pragma once
-
 #include <QObject>
+#include "include/CommonFunction.h"
 
 class CrawlSingleHtml : public QObject
 {

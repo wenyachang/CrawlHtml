@@ -8,5 +8,3 @@
 2.启动服务的命令为"net start stop mysql57"
 
 3.C:\Program Files\MySQL\MySQL Server 5.7\lib\libmysql.dll  复制到exe文件目录下
-
-4.sleep http://jingyan.baidu.com/article/5d368d1ec8cdc93f60c057e6.html

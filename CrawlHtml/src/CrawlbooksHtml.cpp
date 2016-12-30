@@ -11,6 +11,8 @@
 
 CrawlBooksHtml::CrawlBooksHtml(QString message, QObject* parent)
 {
+	m_strConfigPath = QCoreApplication::applicationDirPath() + "/config/exportedBooks.txt";
+	exportedBooks = readTxtFileByLine(m_strConfigPath);
 	initParam(message);
 }
 
@@ -38,13 +40,14 @@ void CrawlBooksHtml::initParam(QString message)
 	}
 	m_strBookPath = QCoreApplication::applicationDirPath();
 
-	int count = 0;
-	while (m_strCurrentHtmlContent.isEmpty() && count < 10)
+
+	while (m_strCurrentHtmlContent.isEmpty())
 	{
 		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBooksUrl);
-		count++;
+		sleep(5000);
 	}
-	QTimer::singleShot(5000, this, SLOT(crawlBookHref()));
+	sleep(5000);
+	crawlBookHref();
 }
 
 void CrawlBooksHtml::crawlBookHref()
@@ -95,9 +98,19 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 		QString text = nodeList.at(i).toElement().text();
 		RegExpManager::getInstance()->removeFolderNameNotIncluded(text);
 		//qDebug() << href << endl << text << endl;
-		m_mapBooks[text] = new CrawlBookHtml(href + message + m_strBookPath + "/" + text, false);
+		if (!isBookExported(text))
+		{
+			QString temp = text;
+			RegExpManager::getInstance()->removeFolderNameNotIncluded(temp);
+			exportedBooks.append(temp);
+			m_mapBooks[text] = new CrawlBookHtml(href + message + m_strBookPath + "/" + text, false);
+		}	
+		else
+		{
+			qDebug() << text << "has exported!" << endl;
+		}
 	}
-
+	writeTxtFileByLine(exportedBooks, m_strConfigPath);
 }
 
 void CrawlBooksHtml::exportOneBook(QString bookName)
@@ -153,6 +166,18 @@ void CrawlBooksHtml::exportToTxt()
 			}
 		}
 	}
+}
+
+bool CrawlBooksHtml::isBookExported(QString bookName)
+{
+	for (int i = 0; i < exportedBooks.size(); ++i)
+	{
+		if (exportedBooks.at(i).trimmed() == bookName.trimmed())
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 

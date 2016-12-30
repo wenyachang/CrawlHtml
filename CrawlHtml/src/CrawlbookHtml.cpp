@@ -2,7 +2,7 @@
 #include "include/RequestHtml.h"
 #include "include/RegExpManager.h"
 #include <QDomDocument>
-#include <QTimer>	  ¡¢
+#include <QTimer>	 
 #include <QDebug>
 
 CrawlBookHtml::CrawlBookHtml(QString message, QObject* parent)
@@ -32,13 +32,13 @@ void CrawlBookHtml::initParam(QString message)
 		m_strBookPath = list.at(5);
 	}
 
-	int count = 0;
-	while (m_strCurrentHtmlContent.isEmpty() && count < 10)
+	while (m_strCurrentHtmlContent.isEmpty())
 	{
 		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBookUrl);
-		count++;
+		sleep(5000);
 	}
-	QTimer::singleShot(5000, this, SLOT(crawlBookCatalog()));
+	sleep(5000);
+	crawlBookCatalog();
 	
 }
 

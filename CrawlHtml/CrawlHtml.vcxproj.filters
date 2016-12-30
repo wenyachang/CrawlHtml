@@ -88,6 +88,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_DataBaseManager.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="src\CommonFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\main.qml">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="include\DataBaseManager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="include\CommonFunction.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

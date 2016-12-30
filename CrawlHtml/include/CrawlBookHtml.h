@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include <QMap>
-#include"include/CrawlSingleHtml.h"
+#include "include/CrawlSingleHtml.h"
 
 class CrawlBookHtml : public QObject
 {

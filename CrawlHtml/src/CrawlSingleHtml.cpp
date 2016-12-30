@@ -4,7 +4,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <QDir>
-#include<QSqlQuery>
+#include <QSqlQuery>
 
 CrawlSingleHtml::CrawlSingleHtml(QString message, QObject* parent) 
 {
@@ -31,14 +31,13 @@ void CrawlSingleHtml::initParam(QString message)
 		m_strArticleName = list.at(3);
 	}
 
-	int count = 0;
-	while (m_strCurrentHtmlContent.isEmpty() && count < 10)
+	while (m_strCurrentHtmlContent.isEmpty())
 	{
 		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strArticleUrl);
-		count++;
+		sleep(5000);
 	}
-	QTimer::singleShot(5000, this, SLOT(crawlContent()));
-	
+	sleep(5000);
+	crawlContent();
 }
 
 void CrawlSingleHtml::crawlContent()
@@ -107,7 +106,7 @@ void CrawlSingleHtml::exportToMysql()
 	qDebug() << m_strArticleName << endl;
 
 	QSqlQuery query;
-	query.prepare("insert into novel (topic, name, content) values (:topic, :name, :content)");
+	query.prepare("insert into novel_social_life (topic, name, content) values (:topic, :name, :content)");
 	query.bindValue(":topic", list.at(list.size() - 1));
 	query.bindValue(":name", m_strArticleName);
 	query.bindValue(":content", m_strContent);
