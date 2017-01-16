@@ -2,12 +2,17 @@
 #include <QDebug>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QTimer>
+#include <QSqlDatabase>
 
 DataBaseManager* DataBaseManager::_Instance = NULL;
+int DataBaseManager::databaseNum = 0;
 
 DataBaseManager::DataBaseManager()
 {
-	
+    QTimer * timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(slot_keepAwake()));
+    timer->start(60 * 1000);
 }
 
 DataBaseManager::~DataBaseManager()
@@ -24,9 +29,11 @@ DataBaseManager* DataBaseManager::getInstance()
 	return _Instance;
 }
 
-void DataBaseManager::connectDataBase()
+QString DataBaseManager::connectDataBase()
 {
-	db = QSqlDatabase::addDatabase("QMYSQL");
+    //mutex.lock();
+    ++databaseNum;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL", QString::number(databaseNum));
 	db.setHostName("localhost");
 	db.setPort(3306);
 	db.setDatabaseName("novel");
@@ -37,16 +44,24 @@ void DataBaseManager::connectDataBase()
 	{
 		qDebug() << "database is established!";
 		db.exec("set names 'UTF8'");
+        return QString::number(databaseNum);
 	}
 	else
 	{
 		qDebug() << db.lastError().text();
 	}
+    //mutex.unlock();
+    return QString();
 }
 
-void DataBaseManager::closeDataBase()
+void DataBaseManager::slot_keepAwake()
 {
-	db.close();
+    QSqlQuery query(QSqlDatabase::database(connectDataBase()));
+    if (!query.exec("select count(*) from novel_social_life"))
+    {
+        qDebug() << query.lastError();
+    }
 }
+
 
 

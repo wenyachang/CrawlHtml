@@ -20,6 +20,7 @@ public:
 	
 public slots:
     void crawlBookHref();
+    
 
 private:
 	QString m_strBooksUrl;

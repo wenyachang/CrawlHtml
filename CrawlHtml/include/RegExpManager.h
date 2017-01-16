@@ -12,6 +12,7 @@ public:
 	void removeNotPairedTags(QString &content);
 	void removeContentNotConcerd(QString &content);
 	void removeFolderNameNotIncluded(QString &content);
+    void replaceFolderNamePunctuate(QString &str);
 	void loadRegExp();
 
 	void loadRegExpsNotPairedTags();

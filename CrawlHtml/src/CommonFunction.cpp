@@ -31,8 +31,12 @@ QList<QString> readTxtFileByLine(QString fileName)
 	while (!file.atEnd())
 	{
 		QByteArray line = file.readLine();
-		list.append(QString::fromLocal8Bit(line));
+        if (!(line.size() < 3))
+        {
+            list.append(QString::fromLocal8Bit(line));
+        }
 	}
+    file.close();
 	return list;
 }
 
@@ -47,8 +51,36 @@ void writeTxtFileByLine(QList<QString> list, QString fileName)
 	QTextStream out(&file);
 	for (int i = 0; i < list.size(); ++i)
 	{
-		out << list.at(i) << "\n";
+        if (!list.at(i).isEmpty())
+        {
+            out << list.at(i) << "\r\n";
+        }
+		
 	}
+    file.close();
+}
+
+void writeTxtFileByLine(QString path, QString str)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Append))
+    {
+        return;
+    }
+
+    QTextStream out(&file);
+    out << str << "\r\n";
+}
+
+QString getLogPath()
+{
+    return QCoreApplication::applicationDirPath() + "/" + "log/log.txt";
+}
+
+QString getCurrentTime()
+{
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    return current_date_time.toString("yyyy-MM-dd hh:mm:ss ddd");
 }
 
 #endif	 //	COMMON_H

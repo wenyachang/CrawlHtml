@@ -50,14 +50,9 @@ void RegExpManager::loadRegExpsNotPairedTags()
 	QRegExp rx16("</h5(.*)>");
 	QRegExp rx17("<h6(.*)>");
 	QRegExp rx18("</h6(.*)>");
-	QRegExp rx19("&nbsp;");			 
-	QRegExp rx20("&mdash;");
-	QRegExp rx21("&middot;"); 		 
-	QRegExp rx22("&ldquo;");
-	QRegExp rx23("&rdquo;");
-	QRegExp rx24("\((.*)\)");
-	QRegExp rx25("£¨(.*)£©");
-	QRegExp rx26("<p>(.*)</p>");
+    QRegExp rx19("<p(.*)>");
+    QRegExp rx20("</p(.*)>");
+
 
 
 	rx1.setMinimal(true);
@@ -78,14 +73,8 @@ void RegExpManager::loadRegExpsNotPairedTags()
 	rx16.setMinimal(true);
 	rx17.setMinimal(true);
 	rx18.setMinimal(true);
-	rx19.setMinimal(true);
-	rx20.setMinimal(true);
-	rx21.setMinimal(true);
-	rx22.setMinimal(true);
-	rx23.setMinimal(true);
-	rx24.setMinimal(true);
-	rx25.setMinimal(true);
-	rx26.setMinimal(true);
+    rx19.setMinimal(true);
+    rx20.setMinimal(true);
 
 	
 	m_regExpsNotPairedTags.append(rx1);
@@ -106,14 +95,8 @@ void RegExpManager::loadRegExpsNotPairedTags()
 	m_regExpsNotPairedTags.append(rx16);
 	m_regExpsNotPairedTags.append(rx17);
 	m_regExpsNotPairedTags.append(rx18);
-	m_regExpsNotPairedTags.append(rx19);
-	m_regExpsNotPairedTags.append(rx20);
-	m_regExpsNotPairedTags.append(rx21);
-	m_regExpsNotPairedTags.append(rx22);
-	m_regExpsNotPairedTags.append(rx23);
-	//m_regExpsNotPairedTags.append(rx24);
-	//m_regExpsNotPairedTags.append(rx25);
-	//m_regExpsNotPairedTags.append(rx26);
+    m_regExpsNotPairedTags.append(rx19);
+    m_regExpsNotPairedTags.append(rx20);
 
 }
 
@@ -212,6 +195,12 @@ void RegExpManager::removeFolderNameNotIncluded(QString &content)
 	{
 		content.remove(m_regExpsNotIncluded.at(i));
 	}
+}
+
+void RegExpManager::replaceFolderNamePunctuate(QString &str)
+{
+    str.replace("&middot;", QString::fromLocal8Bit("¡¤"));
+    str.replace("&nbsp;", "");
 }
 
 

@@ -4,10 +4,15 @@
 #include <QStringList>
 #include <QTimer>
 #include <QDir>
-#include <QSqlQuery>
+#include <QSqlError>
 
-CrawlSingleHtml::CrawlSingleHtml(QString message, QObject* parent) 
+CrawlSingleHtml::CrawlSingleHtml(QString db, QString message, QObject* parent)
 {
+    this->db = db;
+    if (!db.isEmpty())
+    {
+        query = QSqlQuery(QSqlDatabase::database(db));
+    }
 	initParam(message);
 }
 
@@ -23,12 +28,18 @@ CrawlSingleHtml::~CrawlSingleHtml()
 void CrawlSingleHtml::initParam(QString message)
 {
 	QStringList list = message.split("$");
-	if (4 == list.size())
+	if (8 == list.size())
 	{
 		m_strArticleUrl = list.at(0);
 		m_strContentRule = list.at(1);
 		m_strBookPath = list.at(2);
 		m_strArticleName = list.at(3);
+        m_strSecondDir = list.at(4);
+        m_strIntroduction = list.at(5);
+        m_strArticleId = list.at(6);
+        m_strBookName = list.at(7);
+
+        RegExpManager::getInstance()->replaceFolderNamePunctuate(m_strSecondDir);
 	}
 
 	while (m_strCurrentHtmlContent.isEmpty())
@@ -69,27 +80,40 @@ QString CrawlSingleHtml::getCrawlContent()
 void CrawlSingleHtml::exportArticle()
 {
 	QDir *newDir = new QDir;
-	if (!newDir->exists(m_strBookPath))
+    QDir *rootDir = new QDir;
+    QString error = m_strBookPath + "," + m_strSecondDir + "," + m_strArticleName;
+    QString log = getCurrentTime() + ":  " + error;
+    if (!rootDir->exists(m_strBookPath))
+    {
+        if (!rootDir->mkdir(m_strBookPath))
+        {
+            qDebug() << error << "mkdir error:" << m_strBookPath << endl;
+            writeTxtFileByLine(getLogPath(), log + "," + m_strBookPath);
+        }
+    }
+    QString path = m_strBookPath +"/"+ m_strSecondDir;
+	if (!newDir->exists(path))
 	{
-		if (newDir->mkdir(m_strBookPath))
+		if (newDir->mkdir(path))
 		{
-			writeArticleToTxt();
+			writeArticleToTxt(path);
 		}
 		else
 		{
-			qDebug() << "error : write article to txt." << endl;
+            qDebug() << error << "mkdir error:" << path << endl;
+            writeTxtFileByLine(getLogPath(), log + "," + path);
 		}
 
 	}
 	else
 	{
-		writeArticleToTxt();
+        writeArticleToTxt(path);
 	}
 }
 
-void CrawlSingleHtml::writeArticleToTxt()
+void CrawlSingleHtml::writeArticleToTxt(QString path)
 {
-	QFile file(m_strBookPath + "/"+ m_strArticleName);
+    QFile file(path + "/" + m_strArticleName + ".txt");
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		return;
@@ -100,16 +124,26 @@ void CrawlSingleHtml::writeArticleToTxt()
 
 void CrawlSingleHtml::exportToMysql()
 {
-	QStringList list = m_strBookPath.split("/");
+    QStringList  authorAndName = m_strBookName.split(":");
+    m_strContent = m_strContent.trimmed();
+    query.prepare("insert into novel_romance(topic, author, introduction, second_dir, article_id, name, content) values (:topic, :author, :introduction, :second_dir, :article_id, :name, :content)");
+    query.bindValue(":topic", authorAndName.at(1));
+    query.bindValue(":author", authorAndName.at(0));
+    query.bindValue(":introduction", m_strIntroduction);
+    query.bindValue(":second_dir", m_strSecondDir);
+    query.bindValue(":article_id", m_strArticleId.toInt());
+    query.bindValue(":name", m_strArticleName);
+    query.bindValue(":content", m_strContent);
 
-	qDebug() << list.at(list.size() - 1) << endl;
-	qDebug() << m_strArticleName << endl;
-
-	QSqlQuery query;
-	query.prepare("insert into novel_social_life (topic, name, content) values (:topic, :name, :content)");
-	query.bindValue(":topic", list.at(list.size() - 1));
-	query.bindValue(":name", m_strArticleName);
-	query.bindValue(":content", m_strContent);
-	query.exec();
+    
+    if (!query.exec())
+    {
+        QString error = m_strBookName + "," + m_strSecondDir + "," + m_strArticleName + ",";
+        qDebug() << error << query.lastError();
+        QString lastError = query.lastError().text();
+        QString log = getCurrentTime() + ":  " + error + lastError;
+        writeTxtFileByLine(getLogPath(), log);
+    }
+   
 }
 

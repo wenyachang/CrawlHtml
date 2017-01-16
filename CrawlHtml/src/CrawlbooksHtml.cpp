@@ -1,6 +1,7 @@
 #include "include/CrawlBooksHtml.h"
 #include "include/RequestHtml.h"
 #include "include/RegExpManager.h"
+#include "include/CrawlThread.h"
 #include <QDomDocument>
 #include <QByteArray>
 #include <QFile>
@@ -96,21 +97,26 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 	{
 		QString href = nodeList.at(i).toElement().attribute("href");
 		QString text = nodeList.at(i).toElement().text();
-		RegExpManager::getInstance()->removeFolderNameNotIncluded(text);
-		//qDebug() << href << endl << text << endl;
 		if (!isBookExported(text))
 		{
-			QString temp = text;
-			RegExpManager::getInstance()->removeFolderNameNotIncluded(temp);
-			exportedBooks.append(temp);
-			m_mapBooks[text] = new CrawlBookHtml(href + message + m_strBookPath + "/" + text, false);
+			exportedBooks.append(text);
+            writeTxtFileByLine(exportedBooks, m_strConfigPath);
+            QString temp = text;
+            RegExpManager::getInstance()->removeFolderNameNotIncluded(temp);
+
+            CrawlThread* thread = new CrawlThread(href + message + m_strBookPath + "/" + temp + "$" + text);
+            thread->start();
+            sleep(2 * 60 * 1000);
+			//m_mapBooks[text] = new CrawlBookHtml(href + message + m_strBookPath + "/" + temp + "$" + text, false);
 		}	
 		else
 		{
 			qDebug() << text << "has exported!" << endl;
+            QString log = getCurrentTime() + ":  " + text + "has exported!";
+            writeTxtFileByLine(getLogPath(), log);
 		}
 	}
-	writeTxtFileByLine(exportedBooks, m_strConfigPath);
+	
 }
 
 void CrawlBooksHtml::exportOneBook(QString bookName)

@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
 	QObject::connect((QObject*)viewer.engine(), SIGNAL(quit()), &app, SLOT(quit()));
 
 	RegExpManager::getInstance()->loadRegExp();
-	DataBaseManager::getInstance()->connectDataBase();
 
 	return app.exec();
 }

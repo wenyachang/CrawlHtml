@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QObject>
 #include <QtSql/QSqlDatabase>
 
@@ -10,13 +12,16 @@ public:
 	~DataBaseManager();
 
 	static DataBaseManager* getInstance();
+    static int databaseNum;
 
-	void connectDataBase();
-	void closeDataBase();
+    QString connectDataBase();
+
+public slots:
+    void slot_keepAwake();
 
 private:
 	static DataBaseManager* _Instance;
-	QSqlDatabase db;
+    QMutex mutex;
 
 };
 
