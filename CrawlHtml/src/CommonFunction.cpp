@@ -36,7 +36,7 @@ QList<QString> readTxtFileByLine(QString fileName)
             list.append(QString::fromLocal8Bit(line));
         }
 	}
-    file.close();
+    //file.close();
 	return list;
 }
 
@@ -57,7 +57,7 @@ void writeTxtFileByLine(QList<QString> list, QString fileName)
         }
 		
 	}
-    file.close();
+    //file.close();
 }
 
 void writeTxtFileByLine(QString path, QString str)
@@ -69,18 +69,18 @@ void writeTxtFileByLine(QString path, QString str)
     }
 
     QTextStream out(&file);
-    out << str << "\r\n";
+	out << "\r\n" << str;
 }
 
 QString getLogPath()
 {
-    return QCoreApplication::applicationDirPath() + "/" + "log/log.txt";
+    return QCoreApplication::applicationDirPath() + "log/log.txt";
 }
 
 QString getCurrentTime()
 {
     QDateTime current_date_time = QDateTime::currentDateTime();
-    return current_date_time.toString("yyyy-MM-dd hh:mm:ss ddd");
+    return current_date_time.toString("yyyy-MM-dd hh:mm:ss");
 }
 
 #endif	 //	COMMON_H

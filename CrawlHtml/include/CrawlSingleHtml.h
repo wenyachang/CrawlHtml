@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CRAWLSIGNALEHTML_H
+#define CRAWLSIGNALEHTML_H
+
 #include <QObject>
 #include "include/CommonFunction.h"
 #include "include/DataBaseManager.h"
@@ -37,3 +39,4 @@ private:
     QSqlQuery query;
 };
 
+#endif  //CRAWLSIGNALEHTML_H

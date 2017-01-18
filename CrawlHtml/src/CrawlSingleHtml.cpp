@@ -1,5 +1,5 @@
 #include "include/CrawlSingleHtml.h"
-#include "include/RequestHtml.h"
+#include "include/NetworkManager.h"
 #include "include/RegExpManager.h"
 #include <QStringList>
 #include <QTimer>
@@ -44,7 +44,7 @@ void CrawlSingleHtml::initParam(QString message)
 
 	while (m_strCurrentHtmlContent.isEmpty())
 	{
-		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strArticleUrl);
+		m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strArticleUrl);
 		sleep(5000);
 	}
 	sleep(5000);

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CRAWLBOOKSHTML_H
+#define CRAWLBOOKSHTML_H
 
 #include <QObject>
 #include <QVector>
@@ -39,3 +40,4 @@ private:
 	QList<QString> exportedBooks;
 };
 
+#endif  //CRAWLBOOKSHTML_H

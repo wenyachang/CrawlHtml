@@ -1,3 +1,6 @@
+#ifndef REGRXPMANAGER_H
+#define REGRXPMANAGER_H
+
 #include <QObject>
 #include <QRegExp>
 #include <QVector>
@@ -29,3 +32,4 @@ private:
 
 };
 
+#endif  //REGRXPMANAGER_H

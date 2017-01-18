@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CRAWLTHREAD_H
+#define CRAWLTHREAD_H
 
 #include <QThread>
 
@@ -17,3 +18,4 @@ private:
 
 };
 
+#endif  //CRAWLTHREAD_H

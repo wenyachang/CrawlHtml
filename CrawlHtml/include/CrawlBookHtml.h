@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CRAWLBOOKEHTML_H
+#define CRAWLBOOKEHTML_H
 
 #include <QObject>
 #include <QMap>
@@ -36,3 +37,4 @@ private:
 	QMap<QString, CrawlSingleHtml*> m_mapBook;
 };
 
+#endif  //CRAWLBOOKEHTML_H

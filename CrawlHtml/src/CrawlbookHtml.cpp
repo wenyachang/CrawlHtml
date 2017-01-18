@@ -1,5 +1,5 @@
 #include "include/CrawlBookHtml.h"
-#include "include/RequestHtml.h"
+#include "include/NetworkManager.h"
 #include "include/RegExpManager.h"
 #include "include/DataBaseManager.h"
 #include <QDomDocument>
@@ -37,7 +37,7 @@ void CrawlBookHtml::initParam(QString message)
 
 	while (m_strCurrentHtmlContent.isEmpty())
 	{
-		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBookUrl);
+		m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strBookUrl);
 		sleep(10000);
 	}
 	sleep(10000);
@@ -158,9 +158,13 @@ void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString se
         qDebug() << QString::fromLocal8Bit("CrawlBookHtml: 无book链接。") << endl;
         return;
     }
+	
+	QString logBook = getCurrentTime() + ":  " + m_strBookName + 
+		          QString::fromLocal8Bit("CrawlBookHtml: book目录链接数目：") + QString::number(nodeList.size());
+	writeTxtFileByLine(getLogPath(), logBook);
+	qDebug() << logBook << endl;
 
     QString message = "$" + m_strContentRule + "$" + m_strBookPath + "$";
-    qDebug() << QString::fromLocal8Bit("CrawlBookHtml: book目录链接数目：") << nodeList.size() << endl;
     QString db = DataBaseManager::getInstance()->connectDataBase();
     for (int i = 0; i < nodeList.size(); ++i)
     {

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATABASEMANAGER_H
+#define DATABASEMANAGER_H
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
@@ -25,3 +26,4 @@ private:
 
 };
 
+#endif  //DATABASEMANAGER_H

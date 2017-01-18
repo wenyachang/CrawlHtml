@@ -49,9 +49,6 @@
     <ClCompile Include="src\RegExpManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RequestHtml.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\HandleMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -100,6 +97,9 @@
     <ClCompile Include="src\CrawlThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\NetworkManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\main.qml">
@@ -133,7 +133,7 @@
     <ClInclude Include="include\RegExpManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\RequestHtml.h">
+    <ClInclude Include="include\NetworkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

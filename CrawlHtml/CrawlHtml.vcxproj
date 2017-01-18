@@ -195,7 +195,7 @@
     <ClCompile Include="src\DataBaseManager.cpp" />
     <ClCompile Include="src\HandleMessage.cpp" />
     <ClCompile Include="src\RegExpManager.cpp" />
-    <ClCompile Include="src\RequestHtml.cpp" />
+    <ClCompile Include="src\NetworkManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="qml\main.qml" />
@@ -338,7 +338,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets"</Command>
     </CustomBuild>
     <ClInclude Include="include\RegExpManager.h" />
-    <ClInclude Include="include\RequestHtml.h" />
+    <ClInclude Include="include\NetworkManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

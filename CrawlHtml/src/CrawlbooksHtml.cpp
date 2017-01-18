@@ -1,5 +1,5 @@
 #include "include/CrawlBooksHtml.h"
-#include "include/RequestHtml.h"
+#include "include/NetworkManager.h"
 #include "include/RegExpManager.h"
 #include "include/CrawlThread.h"
 #include <QDomDocument>
@@ -44,7 +44,7 @@ void CrawlBooksHtml::initParam(QString message)
 
 	while (m_strCurrentHtmlContent.isEmpty())
 	{
-		m_strCurrentHtmlContent = RequestHtml::getInstance()->getHtmlContent(m_strBooksUrl);
+		m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strBooksUrl);
 		sleep(5000);
 	}
 	sleep(5000);

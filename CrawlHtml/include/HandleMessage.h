@@ -1,3 +1,6 @@
+#ifndef HANDLEMESSAGE_H
+#define HANDLEMESSAGE_H
+
 #include <QObject>
 #include <QVector>
 #include <QVariant>
@@ -25,3 +28,4 @@ private:
 
 };
 
+#endif  //HANDLEMESSAGE_H
