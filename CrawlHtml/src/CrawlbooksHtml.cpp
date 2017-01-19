@@ -112,8 +112,7 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 		else
 		{
 			qDebug() << text << "has exported!" << endl;
-            QString log = getCurrentTime() + ":  " + text + "has exported!";
-            writeTxtFileByLine(getLogPath(), log);
+			appendLog(text + "has exported!");
 		}
 	}
 	

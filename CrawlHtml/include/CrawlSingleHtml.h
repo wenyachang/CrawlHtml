@@ -34,6 +34,8 @@ private:
     QString m_strIntroduction;
     QString m_strArticleId;
     QString m_strBookName;
+	int m_iSecondDirId;
+	int m_iBookId;
 
     QString db;
     QSqlQuery query;

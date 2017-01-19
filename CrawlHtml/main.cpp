@@ -19,6 +19,7 @@
 #include <QDeclarativeView>
 #include "include/RegExpManager.h"
 #include <include/DataBaseManager.h>
+#include "include/NetworkManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -36,6 +37,6 @@ int main(int argc, char *argv[])
 	QObject::connect((QObject*)viewer.engine(), SIGNAL(quit()), &app, SLOT(quit()));
 
 	RegExpManager::getInstance()->loadRegExp();
-
+	
 	return app.exec();
 }

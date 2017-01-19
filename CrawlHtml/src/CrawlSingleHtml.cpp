@@ -28,7 +28,7 @@ CrawlSingleHtml::~CrawlSingleHtml()
 void CrawlSingleHtml::initParam(QString message)
 {
 	QStringList list = message.split("$");
-	if (8 == list.size())
+	if (10 == list.size())
 	{
 		m_strArticleUrl = list.at(0);
 		m_strContentRule = list.at(1);
@@ -38,6 +38,8 @@ void CrawlSingleHtml::initParam(QString message)
         m_strIntroduction = list.at(5);
         m_strArticleId = list.at(6);
         m_strBookName = list.at(7);
+		m_iSecondDirId = list.at(8).toInt();
+		m_iBookId = list.at(9).toInt();
 
         RegExpManager::getInstance()->replaceFolderNamePunctuate(m_strSecondDir);
 	}
@@ -68,8 +70,14 @@ void CrawlSingleHtml::crawlContent()
 		}
 	}
 	RegExpManager::getInstance()->removeContentNotConcerd(m_strContent);
+	m_strContent.trimmed();
 	exportArticle();
-	exportToMysql();
+	//exportToMysql();
+	int re = NetworkManager::getInstance()->createArticle(m_iBookId, m_iSecondDirId, m_strArticleName, m_strContent);
+	if (re != 0)
+	{
+		appendLog(QString("书籍%1创建文章（%2）失败。").arg(m_iBookId).arg(m_strArticleName));
+	}
 }
 
 QString CrawlSingleHtml::getCrawlContent()
@@ -82,13 +90,13 @@ void CrawlSingleHtml::exportArticle()
 	QDir *newDir = new QDir;
     QDir *rootDir = new QDir;
     QString error = m_strBookPath + "," + m_strSecondDir + "," + m_strArticleName;
-    QString log = getCurrentTime() + ":  " + error;
+    
     if (!rootDir->exists(m_strBookPath))
     {
         if (!rootDir->mkdir(m_strBookPath))
         {
             qDebug() << error << "mkdir error:" << m_strBookPath << endl;
-            writeTxtFileByLine(getLogPath(), log + "," + m_strBookPath);
+            appendLog(error + "," + m_strBookPath);
         }
     }
     QString path = m_strBookPath +"/"+ m_strSecondDir;
@@ -101,7 +109,7 @@ void CrawlSingleHtml::exportArticle()
 		else
 		{
             qDebug() << error << "mkdir error:" << path << endl;
-            writeTxtFileByLine(getLogPath(), log + "," + path);
+            appendLog(error + "," + path);
 		}
 
 	}
@@ -141,8 +149,7 @@ void CrawlSingleHtml::exportToMysql()
         QString error = m_strBookName + "," + m_strSecondDir + "," + m_strArticleName + ",";
         qDebug() << error << query.lastError();
         QString lastError = query.lastError().text();
-        QString log = getCurrentTime() + ":  " + error + lastError;
-        writeTxtFileByLine(getLogPath(), log);
+		appendLog(error + lastError);
     }
    
 }

@@ -33,6 +33,7 @@ void CrawlBookHtml::initParam(QString message)
 		m_strContentRule = list.at(4);
 		m_strBookPath = list.at(5);
         m_strBookName = list.at(6);
+		
 	}
 
 	while (m_strCurrentHtmlContent.isEmpty())
@@ -129,17 +130,27 @@ void CrawlBookHtml::splitBookCatalogHrefs3(QString catalog)
     QString introduction = list1.at(0);
     introduction.remove(rx);
 
+	if (!m_strBookName.isEmpty())
+	{
+		m_strBookId = QString::number(NetworkManager::getInstance()->createBook(m_strBookName, introduction));
+	}
+
     if (list1.size() == list2.size() + 1)
     {
         for (int i = 0; i < list2.size(); ++i)
         {
-            splitWithSecondaryDirectory(introduction, list2.at(i), list1.at(i + 1));
+			int re = NetworkManager::getInstance()->crateCatalog(m_strBookId.toInt(), i + 1, list2.at(i));
+			if (re != 0)
+			{
+				appendLog(QString("书籍%1创建目录(%2)失败。").arg(m_strBookId).arg(list2.at(i)));
+			}
+            splitWithSecondaryDirectory(introduction, list2.at(i), i+1, list1.at(i + 1));
         }
     }
     
 }
 
-void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString secondDir, QString hrefs)
+void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString secondDir, int secondDirId, QString hrefs)
 {
     RegExpManager::getInstance()->removeNotPairedTags(hrefs);
     hrefs = "<p>" + hrefs + "</p>";
@@ -159,10 +170,7 @@ void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString se
         return;
     }
 	
-	QString logBook = getCurrentTime() + ":  " + m_strBookName + 
-		          QString::fromLocal8Bit("CrawlBookHtml: book目录链接数目：") + QString::number(nodeList.size());
-	writeTxtFileByLine(getLogPath(), logBook);
-	qDebug() << logBook << endl;
+	appendLog(m_strBookName + QString::fromLocal8Bit("CrawlBookHtml: book目录链接数目：") + QString::number(nodeList.size()));
 
     QString message = "$" + m_strContentRule + "$" + m_strBookPath + "$";
     QString db = DataBaseManager::getInstance()->connectDataBase();
@@ -172,11 +180,10 @@ void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString se
         QString text = nodeList.at(i).toElement().text();
         QString num = QString("%1").arg(i + 1);
         qDebug() << m_strBookName << endl << num << text << endl;
-        m_mapBook[text] = new CrawlSingleHtml(db, href + message + text + "$" + secondDir + "$" + introduction + "$" + num + "$" + m_strBookName, false);
+		m_mapBook[text] = new CrawlSingleHtml(db, href + message + text + "$" + secondDir + "$" + introduction + "$" + num + "$" + m_strBookName + "$" + QString::number(secondDirId) + "$" + m_strBookId, false);
     }
     qDebug() << m_strBookName << "export finished" << endl;
-    QString log = getCurrentTime() + ":  " + m_strBookName + "export finished";
-    writeTxtFileByLine(getLogPath(), log);
+	appendLog(m_strBookName + "export finished");
 
     QList<QString> list;
     list.append(introduction);

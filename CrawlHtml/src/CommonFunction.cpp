@@ -69,7 +69,7 @@ void writeTxtFileByLine(QString path, QString str)
     }
 
     QTextStream out(&file);
-	out << "\r\n" << str;
+	out << "\r\n" << str << "\r\n";
 }
 
 QString getLogPath()
@@ -81,6 +81,11 @@ QString getCurrentTime()
 {
     QDateTime current_date_time = QDateTime::currentDateTime();
     return current_date_time.toString("yyyy-MM-dd hh:mm:ss");
+}
+
+void appendLog(QString logMessage)
+{
+	writeTxtFileByLine(getLogPath(), getCurrentTime() + ":" + logMessage);
 }
 
 #endif	 //	COMMON_H

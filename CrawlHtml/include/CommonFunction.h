@@ -7,6 +7,7 @@
 
 void sleep(unsigned int msec);
 QList<QString> readTxtFileByLine(QString fileName);
+void appendLog(QString logMessage);
 void writeTxtFileByLine(QList<QString> list, QString fileName);
 void writeTxtFileByLine(QString path, QString str);
 QString getLogPath();

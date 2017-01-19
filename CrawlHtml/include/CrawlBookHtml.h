@@ -16,7 +16,7 @@ public:
 	
 	void splitBookCatalogHrefs2(QString catalog);
     void splitBookCatalogHrefs3(QString catalog);
-    void splitWithSecondaryDirectory(QString introduction, QString secondDir, QString hrefs);
+    void splitWithSecondaryDirectory(QString introduction, QString secondDir, int secondDirId, QString hrefs);
 	QMap<QString, CrawlSingleHtml*> getBookMap();
 
 public slots:
@@ -31,6 +31,7 @@ private:
 	QString m_strContentRule;
 	QString m_strBookPath;
     QString m_strBookName;
+	QString m_strBookId;
 
 
 	QString m_strCurrentHtmlContent;

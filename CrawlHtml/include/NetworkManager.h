@@ -12,6 +12,8 @@ const QString API_TOKEN = "DHUDHIUEI34EHDEHWUE8D23E31D2";
 
 class NetworkManager : public QObject
 {
+	Q_OBJECT
+
 public:
     NetworkManager();
     NetworkManager(QString url);
@@ -19,17 +21,19 @@ public:
 	static NetworkManager* getInstance();
     QString getHtmlContent(QString html);
 
-	void post_message(QString url, QByteArray data);
-	void get_message(QString url, QString content);
+	QByteArray post_message(QString url, QByteArray data);
+	QByteArray get_message(QString url, QString content);
 
 	//创建书籍
-	void createBook(QString name, QString intro);
+	int createBook(QString name, QString intro);
 	//更新书籍
 	void updateBook(int book_id);
 	//创建目录
-	void crateCatalog(int book_id, int sort_id, QString menu_name);
+	int crateCatalog(int book_id, int sort_id, QString menu_name);
 	//创建文章
-	void createArticle(int book_id, int book_menu_id);
+	int createArticle(int book_id, int book_menu_id, QString title, QString content);
+
+	QString getTagMessage(QByteArray message, QString tag);
 
 public slots:
     void slotError(QNetworkReply::NetworkError error);
