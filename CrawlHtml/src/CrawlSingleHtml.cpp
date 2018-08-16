@@ -49,7 +49,7 @@ void CrawlSingleHtml::initParam(QString message)
 		m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strArticleUrl);
 		sleep(5000);
 	}
-	sleep(5000);
+	//sleep(5000);
 	crawlContent();
 }
 
@@ -67,17 +67,18 @@ void CrawlSingleHtml::crawlContent()
 		else
 		{
 			qDebug() << QString::fromLocal8Bit("CrawlSingleHtml: articleÆ¥Åä´íÎó¡£") << endl;
+			appendLog(QString::fromLocal8Bit("CrawlSingleHtml: articleÆ¥Åä´íÎó¡£"));
 		}
 	}
 	RegExpManager::getInstance()->removeContentNotConcerd(m_strContent);
 	m_strContent.trimmed();
-	exportArticle();
-	//exportToMysql();
-	int re = NetworkManager::getInstance()->createArticle(m_iBookId, m_iSecondDirId, m_strArticleName, m_strContent);
+	//exportArticle();
+	exportToMysql();
+	/*int re = NetworkManager::getInstance()->createArticle(m_iBookId, m_iSecondDirId, m_strArticleName, m_strContent);
 	if (re != 0)
 	{
 		appendLog(QString("Êé¼®%1´´½¨ÎÄÕÂ£¨%2£©Ê§°Ü¡£").arg(m_iBookId).arg(m_strArticleName));
-	}
+	}*/
 }
 
 QString CrawlSingleHtml::getCrawlContent()
@@ -117,6 +118,8 @@ void CrawlSingleHtml::exportArticle()
 	{
         writeArticleToTxt(path);
 	}
+	delete newDir;
+	delete rootDir;
 }
 
 void CrawlSingleHtml::writeArticleToTxt(QString path)
@@ -133,8 +136,12 @@ void CrawlSingleHtml::writeArticleToTxt(QString path)
 void CrawlSingleHtml::exportToMysql()
 {
     QStringList  authorAndName = m_strBookName.split(":");
+	if (authorAndName.size() < 2)
+	{
+		return;
+	}
     m_strContent = m_strContent.trimmed();
-    query.prepare("insert into novel_romance(topic, author, introduction, second_dir, article_id, name, content) values (:topic, :author, :introduction, :second_dir, :article_id, :name, :content)");
+    query.prepare("insert into novel_zhuanti3(topic, author, introduction, second_dir, article_id, name, content) values (:topic, :author, :introduction, :second_dir, :article_id, :name, :content)");
     query.bindValue(":topic", authorAndName.at(1));
     query.bindValue(":author", authorAndName.at(0));
     query.bindValue(":introduction", m_strIntroduction);

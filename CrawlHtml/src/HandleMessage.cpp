@@ -13,7 +13,7 @@ HandleMessage::HandleMessage()
 
 HandleMessage::~HandleMessage()
 {
-	
+	delete _Instance;
 }
 
 HandleMessage* HandleMessage::getInstance()

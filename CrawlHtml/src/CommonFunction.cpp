@@ -25,7 +25,7 @@ QList<QString> readTxtFileByLine(QString fileName)
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
-		qDebug() << "打开TXT文件失败！" << endl;
+		qDebug() << QString::fromLocal8Bit("打开TXT文件失败！") << endl;
 	}
 
 	while (!file.atEnd())
@@ -36,7 +36,7 @@ QList<QString> readTxtFileByLine(QString fileName)
             list.append(QString::fromLocal8Bit(line));
         }
 	}
-    //file.close();
+    file.close();
 	return list;
 }
 
@@ -53,7 +53,7 @@ void writeTxtFileByLine(QList<QString> list, QString fileName)
 	{
         if (!list.at(i).isEmpty())
         {
-            out << list.at(i) << "\r\n";
+			out << "\r\n" << list.at(i) << "\r\n";
         }
 		
 	}
@@ -74,7 +74,7 @@ void writeTxtFileByLine(QString path, QString str)
 
 QString getLogPath()
 {
-    return QCoreApplication::applicationDirPath() + "log/log.txt";
+    return QCoreApplication::applicationDirPath() + "/log/log.txt";
 }
 
 QString getCurrentTime()

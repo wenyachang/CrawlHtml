@@ -16,8 +16,15 @@ http://t.icesmall.cn/tagSpecial/special_yqxs152/%E8%A8%80%E6%83%85%E5%90%8D%E8%9
    <div class="post-body">(.*)<div class="Lineblank">
    <div id="Content" style="display: none;">(.*)</div>
 
-   create table novel_romance(topic varchar(100), author varchar(100), 
+   create table novel_shudan(topic varchar(100), author varchar(100), 
    introduction varchar(2000), second_dir varchar(100), article_id int, name varchar(100), content varchar(19000));
 
+create table novel_zhuanti3(topic varchar(100), author varchar(100), 
+   introduction text, second_dir varchar(100), article_id int, name varchar(100), content text;
 
-   mysqldump -h localhost -u root -p mytable>D:\mysql\mytable.sql
+   mysqldump -h localhost -u root -p novel novel_history>D:\mysql\novel_history.sql
+
+
+
+
+

@@ -13,8 +13,7 @@ public:
 	CrawlBookHtml(QString message, QObject* parent = 0);
 	~CrawlBookHtml();
 	void initParam(QString message);
-	
-	void splitBookCatalogHrefs2(QString catalog);
+
     void splitBookCatalogHrefs3(QString catalog);
     void splitWithSecondaryDirectory(QString introduction, QString secondDir, int secondDirId, QString hrefs);
 	QMap<QString, CrawlSingleHtml*> getBookMap();

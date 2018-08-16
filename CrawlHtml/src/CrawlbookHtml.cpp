@@ -39,9 +39,9 @@ void CrawlBookHtml::initParam(QString message)
 	while (m_strCurrentHtmlContent.isEmpty())
 	{
 		m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strBookUrl);
-		sleep(10000);
+		sleep(5000);
 	}
-	sleep(10000);
+	//sleep(5000);
     crawlBookCatalog();
 	
 }
@@ -58,6 +58,7 @@ void CrawlBookHtml::crawlBookCatalog()
 			if (rx.cap(0).isEmpty())
 			{
 				qDebug() << QString::fromLocal8Bit("CrawlBookHtml: 链接内容为空！");
+				appendLog(QString::fromLocal8Bit("CrawlBookHtml: 链接内容为空！"));
 				return;
 			}
 			splitBookCatalogHrefs3(rx.cap(0));
@@ -65,43 +66,10 @@ void CrawlBookHtml::crawlBookCatalog()
 		else
 		{
 			qDebug() << QString::fromLocal8Bit("CrawlBookHtml: book匹配错误。") << endl;
+			appendLog(QString::fromLocal8Bit("CrawlBookHtml: book匹配错误。"));
+
 		}
 	}
-}
-
-void CrawlBookHtml::splitBookCatalogHrefs2(QString catalog)
-{
-	
-	////qDebug() << "CrawlBookHtml::catalog frefs :" << catalog << endl;
-	//catalog = "<p>" + catalog + "</p>";
-	//RegExpManager::getInstance()->removeNotPairedTags(catalog);
-
-	//QDomDocument doc;
-	//QString error;
-	//if (!doc.setContent(catalog, false, &error))
-	//{
-	//	qDebug() << QString::fromLocal8Bit("CrawlBookHtml: html转xml错误。") << endl;
-	//	return;
-	//}
-	//QDomElement root = doc.documentElement();
-	//QDomNodeList nodeList = root.elementsByTagName("a");
-	//if (nodeList.isEmpty())
-	//{
-	//	qDebug() << QString::fromLocal8Bit("CrawlBookHtml: 无book链接。") << endl;
-	//	return;
-	//}
-
-	//QString message = "$" + m_strContentRule + "$" + m_strBookPath + "$";
-	//qDebug() << QString::fromLocal8Bit("CrawlBookHtml: book目录链接数目：") << nodeList.size() << endl;
-	//for (int i = 0; i < nodeList.size(); ++i)
-	//{
-	//	QString href = nodeList.at(i).toElement().attribute("href");
-	//	QString text = nodeList.at(i).toElement().text();
-	//	//qDebug() << href << endl << text << endl;
-	//	QString num = QString("%1").arg(i+1);
-	//	m_mapBook[text] = new CrawlSingleHtml(href + message + num + ". " + text, false);
-	//}
-	
 }
 
 QMap<QString, CrawlSingleHtml*> CrawlBookHtml::getBookMap()
@@ -132,18 +100,19 @@ void CrawlBookHtml::splitBookCatalogHrefs3(QString catalog)
 
 	if (!m_strBookName.isEmpty())
 	{
-		m_strBookId = QString::number(NetworkManager::getInstance()->createBook(m_strBookName, introduction));
+		//m_strBookId = QString::number(NetworkManager::getInstance()->createBook(m_strBookName, introduction));
+		//NetworkManager::getInstance()->updateBook(m_strBookName.toInt());
 	}
 
     if (list1.size() == list2.size() + 1)
     {
         for (int i = 0; i < list2.size(); ++i)
         {
-			int re = NetworkManager::getInstance()->crateCatalog(m_strBookId.toInt(), i + 1, list2.at(i));
+			/*int re = NetworkManager::getInstance()->crateCatalog(m_strBookId.toInt(), i + 1, list2.at(i));
 			if (re != 0)
 			{
 				appendLog(QString("书籍%1创建目录(%2)失败。").arg(m_strBookId).arg(list2.at(i)));
-			}
+			}*/
             splitWithSecondaryDirectory(introduction, list2.at(i), i+1, list1.at(i + 1));
         }
     }
@@ -160,6 +129,7 @@ void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString se
     if (!doc.setContent(hrefs, false, &error))
     {
         qDebug() << QString::fromLocal8Bit("CrawlBookHtml: html转xml错误。") << endl;
+		appendLog(QString::fromLocal8Bit("CrawlBookHtml: html转xml错误。"));
         return;
     }
     QDomElement root = doc.documentElement();
@@ -167,6 +137,7 @@ void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString se
     if (nodeList.isEmpty())
     {
         qDebug() << QString::fromLocal8Bit("CrawlBookHtml: 无book链接。") << endl;
+		appendLog(QString::fromLocal8Bit("CrawlBookHtml: 无book链接。"));
         return;
     }
 	
@@ -180,8 +151,10 @@ void CrawlBookHtml::splitWithSecondaryDirectory(QString introduction, QString se
         QString text = nodeList.at(i).toElement().text();
         QString num = QString("%1").arg(i + 1);
         qDebug() << m_strBookName << endl << num << text << endl;
-		m_mapBook[text] = new CrawlSingleHtml(db, href + message + text + "$" + secondDir + "$" + introduction + "$" + num + "$" + m_strBookName + "$" + QString::number(secondDirId) + "$" + m_strBookId, false);
-    }
+		appendLog(m_strBookName + num);
+		CrawlSingleHtml* single = new CrawlSingleHtml(db, href + message + text + "$" + secondDir + "$" + introduction + "$" + num + "$" + m_strBookName + "$" + QString::number(secondDirId) + "$" + m_strBookId, false);
+		delete single;
+	}
     qDebug() << m_strBookName << "export finished" << endl;
 	appendLog(m_strBookName + "export finished");
 

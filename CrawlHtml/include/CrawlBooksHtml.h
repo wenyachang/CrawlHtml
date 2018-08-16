@@ -15,8 +15,6 @@ public:
 	~CrawlBooksHtml();
 	void initParam(QString message);
 	void splitBooksHrefs(QString hrefs);
-	void exportOneBook(QString bookName);
-	void exportToTxt();
 	bool isBookExported(QString bookName);
 	
 public slots:
@@ -36,7 +34,6 @@ private:
 
 	QString m_strCurrentHtmlContent;
 	
-	QMap<QString, CrawlBookHtml*> m_mapBooks;
 	QList<QString> exportedBooks;
 };
 

@@ -8,3 +8,27 @@
 2.启动服务的命令为"net start stop mysql57"
 
 3.C:\Program Files\MySQL\MySQL Server 5.7\lib\libmysql.dll  复制到exe文件目录下
+
+mysql123
+
+4.select concat(truncate(sum(data_length)/1024/1024,2),'MB') as data_size,
+concat(truncate(sum(max_data_length)/1024/1024,2),'MB') as max_data_size,
+concat(truncate(sum(data_free)/1024/1024,2),'MB') as data_free,
+concat(truncate(sum(index_length)/1024/1024,2),'MB') as index_size
+from information_schema.tables where TABLE_SCHEMA = 'novel';
+
+
+查询数据库所占空间大小
+
+5.DROP TABLE IF EXISTS  `novel_zhuanti3`;
+CREATE TABLE `novel_zhuanti3` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `topic` varchar(50) DEFAULT NULL COMMENT '图书名称',
+  `author` varchar(50) DEFAULT NULL COMMENT '原作者，字符串',
+  `introduction` text COMMENT '图书简介',
+  `second_dir` varchar(100) COMMENT '目录名称',
+  `article_id` int(11) DEFAULT '0' COMMENT '文章id',
+  `name` varchar(100) COMMENT '文章名称',
+  `content` text COMMENT '文章内容',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='图书表

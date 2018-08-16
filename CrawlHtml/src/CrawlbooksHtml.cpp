@@ -47,7 +47,7 @@ void CrawlBooksHtml::initParam(QString message)
 		m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strBooksUrl);
 		sleep(5000);
 	}
-	sleep(5000);
+	//sleep(5000);
 	crawlBookHref();
 }
 
@@ -77,12 +77,12 @@ void CrawlBooksHtml::crawlBookHref()
 void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 {
 	RegExpManager::getInstance()->removeNotPairedTags(hrefs);
-	//qDebug() << "CrawlBooksHtml::book frefs :" << hrefs << endl;
 	QDomDocument doc;
 	QString error;
 	if (!doc.setContent(hrefs, false, &error))
 	{
 		qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: html转xml错误。") << endl;
+		appendLog(QString::fromLocal8Bit("CrawlBooksHtml: html转xml错误。"));
 		return;
 	}
 	QDomElement root = doc.documentElement();
@@ -90,6 +90,7 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 	if (nodeList.isEmpty())
 	{
 		qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: 无books链接。") << endl;
+		appendLog(QString::fromLocal8Bit("CrawlBooksHtml: 无books链接。"));
 		return;
 	}
 	QString message = "$" + m_strBookRule + "$" + m_strBookNameRule + "$" + m_strAuthorRule + "$" + m_strContentRule + "$";
@@ -100,14 +101,22 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 		if (!isBookExported(text))
 		{
 			exportedBooks.append(text);
-            writeTxtFileByLine(exportedBooks, m_strConfigPath);
+			writeTxtFileByLine(m_strConfigPath, text);
             QString temp = text;
             RegExpManager::getInstance()->removeFolderNameNotIncluded(temp);
 
             CrawlThread* thread = new CrawlThread(href + message + m_strBookPath + "/" + temp + "$" + text);
             thread->start();
-            sleep(2 * 60 * 1000);
-			//m_mapBooks[text] = new CrawlBookHtml(href + message + m_strBookPath + "/" + temp + "$" + text, false);
+
+			while (thread->isRunning())
+			{
+				sleep(2 * 60 * 1000);
+			}
+
+			if (thread->isFinished())
+			{
+				delete thread;
+			}
 		}	
 		else
 		{
@@ -116,61 +125,6 @@ void CrawlBooksHtml::splitBooksHrefs(QString hrefs)
 		}
 	}
 	
-}
-
-void CrawlBooksHtml::exportOneBook(QString bookName)
-{
-	CrawlBookHtml* book = m_mapBooks[bookName];
-	QDir *newDir = new QDir;
-	QString path = QCoreApplication::applicationDirPath();
-	if (!newDir->exists(path + "/" + bookName))
-	{
-		bool ok = newDir->mkdir(path + "/" + bookName);
-		if (ok)
-		{
-			QMap<QString, CrawlSingleHtml*>::const_iterator iter = book->getBookMap().constBegin();
-			while (iter != book->getBookMap().constEnd())
-			{
-				QFile file(path + "/" + bookName + "/" + iter.key() + ".txt");
-				if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-				{
-					return;
-				}
-				QTextStream out(&file);
-				CrawlSingleHtml* content = iter.value();
-				out << content->getCrawlContent();
-			}
-		}
-	}
-}
-
-void CrawlBooksHtml::exportToTxt()
-{													 
-	QMap<QString, CrawlBookHtml*>::const_iterator iter = m_mapBooks.constBegin();
-	while (iter != m_mapBooks.constEnd())
-	{
-		QDir *newDir = new QDir;
-		if (!newDir->exists("../export/" + iter.key()))
-		{
-			bool ok = newDir->mkdir("../export/" + iter.key());
-			if (ok)
-			{
-				CrawlBookHtml* book = iter.value();
-				QMap<QString, CrawlSingleHtml*>::const_iterator iter1 = book->getBookMap().constBegin();
-				while (iter1 != book->getBookMap().constEnd())
-				{
-					QFile file(newDir->absolutePath() +"/" +iter1.key() + ".txt");
-					if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-					{
-						return;
-					}
-					QTextStream out(&file);
-					CrawlSingleHtml* content = iter1.value();
-					out << content->getCrawlContent();
-				}
-			}
-		}
-	}
 }
 
 bool CrawlBooksHtml::isBookExported(QString bookName)

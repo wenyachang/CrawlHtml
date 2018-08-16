@@ -15,4 +15,5 @@ CrawlThread::~CrawlThread()
 void CrawlThread::run()
 {
     CrawlBookHtml* book = new CrawlBookHtml(m_strMessage, false);
+	delete book;
 }

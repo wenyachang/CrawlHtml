@@ -17,7 +17,7 @@ DataBaseManager::DataBaseManager()
 
 DataBaseManager::~DataBaseManager()
 {
-	
+	delete _Instance;
 }						  
 
 DataBaseManager* DataBaseManager::getInstance()
@@ -59,7 +59,7 @@ void DataBaseManager::slot_keepAwake()
     QSqlQuery query(QSqlDatabase::database(connectDataBase()));
     if (!query.exec("select count(*) from novel_social_life"))
     {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
     }
 }
 

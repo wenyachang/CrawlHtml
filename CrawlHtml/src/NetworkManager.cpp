@@ -109,7 +109,7 @@ void NetworkManager::updateBook(int book_id)
 	postData.append("&book_id=");
 	postData.append(QString::number(book_id));
 
-	post_message("http://api.huati365.com/api/book", postData);
+	QByteArray ba = post_message("http://api.huati365.com/api/book", postData);
 }
 
 int NetworkManager::crateCatalog(int book_id, int sort_id, QString menu_name)
