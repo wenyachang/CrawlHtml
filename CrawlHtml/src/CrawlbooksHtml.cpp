@@ -41,14 +41,75 @@ void CrawlBooksHtml::initParam(QString message)
 	}
 	m_strBookPath = QCoreApplication::applicationDirPath();
 
-
-	while (m_strCurrentHtmlContent.isEmpty())
+	if (0)
 	{
-		m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strBooksUrl);
-		sleep(5000);
+		QString authorsHtml = "http://t.icesmall.cn/bookSpecial/special_book1/%E5%B0%8F%E8%AF%B4";
+		QString authorsHtmlContent = NetworkManager::getInstance()->getHtmlContent(authorsHtml);
+		QString authorsRule = m_strBooksRule;
+		QRegExp rx(authorsRule);
+		rx.setMinimal(true);
+		if (rx.isValid())
+		{
+			int pos = authorsHtmlContent.indexOf(rx);
+			if (pos >= 0)
+			{
+				if (rx.cap(0).isEmpty())
+				{
+					qDebug() << QString::fromLocal8Bit("authorsHtml: 无匹配内容。") << endl;
+					return;
+				}
+				QString hrefs = rx.cap(0);
+				RegExpManager::getInstance()->removeNotPairedTags(hrefs);
+				QDomDocument doc;
+				QString error;
+				if (!doc.setContent(hrefs, false, &error))
+				{
+					qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: html转xml错误。") << endl;
+					//appendLog(QString::fromLocal8Bit("CrawlBooksHtml: html转xml错误。"));
+					return;
+				}
+				QDomElement root = doc.documentElement();
+				QDomNodeList nodeList = root.elementsByTagName("a");
+				if (nodeList.isEmpty())
+				{
+					qDebug() << QString::fromLocal8Bit("CrawlBooksHtml: 无books链接。") << endl;
+					//appendLog(QString::fromLocal8Bit("CrawlBooksHtml: 无books链接。"));
+					return;
+				}
+
+				for (int i = 41; i < nodeList.size(); ++i)
+				{
+					QString href = nodeList.at(i).toElement().attribute("href");
+					QString text = nodeList.at(i).toElement().text();
+
+					while (m_strCurrentHtmlContent.isEmpty())
+					{
+						m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(href);
+						sleep(5000);
+					}
+					//sleep(5000);
+					crawlBookHref();
+					m_strCurrentHtmlContent.clear();
+				}
+			}
+		}
 	}
-	//sleep(5000);
-	crawlBookHref();
+	else if (1)
+	{
+		m_strCurrentHtmlContent = readTxtFile(QCoreApplication::applicationDirPath() + "/config/tempImport.txt");
+		splitBooksHrefs(m_strCurrentHtmlContent);
+
+	}
+	else
+	{
+		while (m_strCurrentHtmlContent.isEmpty())
+		{
+			m_strCurrentHtmlContent = NetworkManager::getInstance()->getHtmlContent(m_strBooksUrl);
+			sleep(5000);
+		}
+		//sleep(5000);
+		crawlBookHref();
+	}
 }
 
 void CrawlBooksHtml::crawlBookHref()

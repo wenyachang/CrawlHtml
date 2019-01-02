@@ -40,6 +40,24 @@ QList<QString> readTxtFileByLine(QString fileName)
 	return list;
 }
 
+QString readTxtFile(QString fileName)
+{
+	QString fileContent;
+	QFile file(fileName);
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		qDebug() << QString::fromLocal8Bit("打开TXT文件失败！") << endl;
+	}
+
+	while (!file.atEnd())
+	{
+		QByteArray line = file.readAll();
+		fileContent.append(QString::fromLocal8Bit(line));
+	}
+	file.close();
+	return fileContent;
+}
+
 void writeTxtFileByLine(QList<QString> list, QString fileName)
 {
 	QFile file(fileName);

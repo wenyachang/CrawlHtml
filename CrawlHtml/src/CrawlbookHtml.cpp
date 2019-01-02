@@ -81,7 +81,7 @@ void CrawlBookHtml::splitBookCatalogHrefs3(QString catalog)
 {
     catalog = "<p>" + catalog + "</p>";
     
-    QRegExp te("<h3>(.*)</h3>");
+    QRegExp te("<h3(.*)</h3>");
     te.setMinimal(true);
     QStringList list1 = catalog.split(te);
 

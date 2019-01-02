@@ -16,7 +16,7 @@
 #include <QQmlContext>
 #include "include/HandleMessage.h"
 #include <QVariant>
-#include <QDeclarativeView>
+//#include <QDeclarativeView>
 #include "include/RegExpManager.h"
 #include "include/DataBaseManager.h"
 #include "include/NetworkManager.h"
